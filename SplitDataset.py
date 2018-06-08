@@ -1,4 +1,5 @@
 import os
+import random
 
 def create_val_data(img_path, 
                     gt_path, 
