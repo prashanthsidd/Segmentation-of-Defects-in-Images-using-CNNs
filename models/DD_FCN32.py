@@ -3,7 +3,7 @@ from keras.models import Model, load_model
 from keras.regularizers import l2
 from keras.layers import Conv2D, MaxPool2D, Input, Activation
 from keras.applications import VGG16
-import util.BilinearUpSampling2D as BilinearUpSampling2D 
+from util.BilinearUpSampling import BilinearUpSampling2D 
 
 def DD_32s(weights, input_shape=(64,64,3)):
 
