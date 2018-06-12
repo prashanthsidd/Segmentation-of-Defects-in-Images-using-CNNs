@@ -84,6 +84,3 @@ def generateMultiClassSegMaps(path_to_imgs,
         mask[y1:y2, x1:x2] = 1
       
   cv.imwrite(os.path.join(save_path, img[:-4] + '.png'), mask)
-
-
-generateTwoClassSegMaps("/media/sid/L21/Thesis/Datasets/WoodDefect/salum1/images", "/media/sid/L21/Thesis/Datasets/WoodDefect/salum1/defectFiles", "./data/Salum1_GT_2Class/")
