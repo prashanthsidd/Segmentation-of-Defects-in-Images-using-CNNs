@@ -84,7 +84,7 @@ def generateMultiClassSegMaps(path_to_imgs,
       #mask for two class segmentation. 
       
       if def_type not in ignore_defects:
-        idx = defect_classes.index(def_type)
+        idx = defect_classes.index(def_type) + 1
         mask[y1:y2, x1:x2] = idx
       
     cv.imwrite(os.path.join(save_path, img[:-4] + '.png'), mask)
