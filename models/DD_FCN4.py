@@ -6,7 +6,7 @@ from keras.applications import VGG16
 from util.BilinearUpSampling import BilinearUpSampling2D 
 from util.Cropping import crop
 
-def DD_4s(weights, input_shape=(64,64,3)):
+def DD_4s(weights, input_shape=(64,64,3), n_classes=2):
 
   #Input shape
   if input_shape is not None:
@@ -51,14 +51,14 @@ def DD_4s(weights, input_shape=(64,64,3)):
   x = Conv2D(500, (1,1), activation='relu', padding='same', name='dense_2', kernel_regularizer=l2(0.001))(x)
   
   #32s
-  x = Conv2D(2, (1,1), activation='linear', padding='valid', name='dense', kernel_initializer='he_normal')(x)
+  x = Conv2D(n_classes, (1,1), activation='linear', padding='valid', name='dense', kernel_initializer='he_normal')(x)
   
   o = BilinearUpSampling2D(size=(2,2))(x)
   
   #16s
   o2 = p4
   
-  o2 = Conv2D(2, (1,1), kernel_initializer='he_normal')(o2)
+  o2 = Conv2D(n_classes, (1,1), kernel_initializer='he_normal')(o2)
   
   o,o2  = crop(o, o2, img_inp)
   
@@ -69,7 +69,7 @@ def DD_4s(weights, input_shape=(64,64,3)):
   #8s 
   o2 = p3
   
-  o2 = Conv2D(2, (1,1), kernel_initializer='he_normal')(o2)
+  o2 = Conv2D(n_classes, (1,1), kernel_initializer='he_normal')(o2)
   
   o2, o = crop(o2,o, img_inp)
 	
@@ -81,7 +81,7 @@ def DD_4s(weights, input_shape=(64,64,3)):
   
   o2 = p2
   
-  o2 = Conv2D(2, (1,1), kernel_initializer='he_normal')(o2)
+  o2 = Conv2D(n_classes, (1,1), kernel_initializer='he_normal')(o2)
   
   o2, o = crop(o2,o, img_inp)
 	
