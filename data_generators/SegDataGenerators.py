@@ -80,6 +80,8 @@ def Segmentation_Generator(images_path,
    
   img_seg_zip = zip(images,segmentations)
 
+  zip_list = list(img_seg_zip)
+  random.shuffle(zip_list)
   zipped = itertools.cycle(img_seg_zip)
   
   count = 0
