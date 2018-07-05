@@ -35,8 +35,8 @@ def generate_patches(image_dir,
     h = patch_dim * math.ceil(h / patch_dim)
     w = patch_dim * math.ceil(w / patch_dim)
 
-    img = cv.resize(img, (w, h))
-    mask = cv.resize(mask, (w, h))
+    img = cv.resize(img, (w, h), interpolation = cv.INTER_NEAREST)
+    mask = cv.resize(mask, (w, h), interpolation = cv.INTER_NEAREST)
 
     x_co = 0
     y_co = 0
