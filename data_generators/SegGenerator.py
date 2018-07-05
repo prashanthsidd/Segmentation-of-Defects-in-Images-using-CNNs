@@ -32,36 +32,17 @@ def Preprocess_Images(path, width, height):
 def Preprocess_Segmentation(path, width, height, n_classes):
     
   try:
-    
     seg = cv.imread(path, 0)
-    
+
     seg = cv.resize(seg, (width,height))
+
+    seg = keras.utils.to_categorical(seg, n_classes)
     
-#     seg = cv.threshold(seg, 1, 255, cv.THRESH_BINARY)[1]
-    
-# #     print(seg.shape)
-    
-# #     seg = seg.flatten()
-    
-#     seg[seg == 255] = 1
-#     seg[seg == 0] = 0
-    
-  
-#     print(seg)
-    
-    seg = keras.utils.to_categorical(seg, 2)
-    
-#     print(seg)
-#     return np.expand_dims(seg,2)
     return seg
   
   except  Exception as e:
-    print("Preprocess Seg", path, e)  
-#     seg_labels = np.zeros(( height , width , n_classes ))
-#     seg_labels = np.reshape(seg_labels, ( width*height , n_classes ))
-#     return seg_labels
-    
-    
+    print("Preprocess Seg", path, e)
+
 def Segmentation_Generator(images_path, 
                            seg_path, 
                            batch_size, 
@@ -108,7 +89,7 @@ def Segmentation_Generator(images_path,
       
       Y.append(Preprocess_Segmentation(os.path.join(seg_path, seg), 
                                        output_width,
-                                       output_height, 2))
+                                       output_height, n_classes))
     count += 1
 
     yield np.array(X),np.array(Y)   
