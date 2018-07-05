@@ -3,6 +3,16 @@
 import keras.backend as K
 import tensorflow as tf
 
+
+def c_mat(label_true, label_pred, n_class):
+    mask = (label_true >= 0) & (label_true < n_class)
+    hist = np.bincount(
+        n_class * K.cast(tf.boolean_mask(label_true,mask), 'int') +
+        tf.boolean_mask(label_pred,mask), minlength=n_class ** 2)
+    
+    hist = K.reshape(hist, (n_class, n_class))
+    return hist
+
 def compute_error_matrix(y_true, y_pred):
     """Compute Confusion matrix (a.k.a. error matrix).
     a       predicted
