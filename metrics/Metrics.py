@@ -1,5 +1,3 @@
-# Code adapted from "https://github.com/JihongJu/keras-fcn/blob/master/voc2011/score.py"
-
 import keras.backend as K
 import tensorflow as tf
 
@@ -49,6 +47,8 @@ def mean_accuracy(y_true, y_pred):
     confusion = compute_error_matrix(y_true, y_pred)
     # per-class accuracy
     acc = tf.diag_part(confusion) / K.sum(confusion, axis=1)
+    mask = tf.logical_not(tf.is_nan(acc))
+    acc = tf.boolean_mask(acc, mask)
     return K.mean(acc)
 
 
@@ -59,7 +59,8 @@ def mean_IU(y_true, y_pred):
     # per-class IU
     iu = K.cast(tf.diag_part(confusion) / (K.sum(confusion, axis=1) + K.sum(confusion, axis=0) - tf.diag_part(confusion)),
         'float')
-    
+    mask = tf.logical_not(tf.is_nan(iu))
+    iu = tf.boolean_mask(iu, mask)
     return K.mean(iu)
 
 
@@ -73,7 +74,7 @@ def freq_weighted_IU(y_true, y_pred):
                  tf.diag_part(confusion)),
          'float')
     
-    mask = tf.is_finite(freq)
+    mask = tf.is_finite(freq) & tf.logical_not(tf.is_nan(iu))
     freq_masked = tf.boolean_mask(freq,mask)
     iu_masked = tf.boolean_mask(iu,mask)
     
