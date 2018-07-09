@@ -15,6 +15,8 @@ def get_salumn1_class_weights():
     salum1_class_weights['9'] = [0.03248902, 0.97143194, 0.99658679, 0.99961234,
                                  0.99999777, 0.99992129, 0.99997822, 0.99999907, 0.99998356]
 
+    salum1_class_weights['4'] = [0.00866283, 0.99239408, 0.9990614, 0.99988169]
+
     salum1_class_weights['2'] = [0.05, 0.95]
 
     return salum1_class_weights
