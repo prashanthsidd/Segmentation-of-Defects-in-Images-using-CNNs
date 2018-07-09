@@ -1,4 +1,4 @@
-from keras import load_model
+from keras.models import load_model
 from metrics.Metrics import mean_IU
 from loss import weighted_pixelwise_crossentropy
 from util.BilinearUpSampling import BilinearUpSampling2D
