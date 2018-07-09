@@ -29,6 +29,7 @@ def train_model(model_type,
                 input_height,
                 lr,
                 freeze_deconv_ly,
+                save_path,
                 validate=False,
                 initial_epoch=0,
                 num_of_epochs=10,
@@ -36,8 +37,7 @@ def train_model(model_type,
                 n_classes=2,
                 class_weights_idx='2',
                 optimizer='adadelta', 
-                resume_training=False,
-                save_path=model_save_path):
+                resume_training=False,):
   
   dd_FCNs = { 'FCN2s':DD_2s, 'FCN16s':DD_16s, 'FCN8s':DD_8s, 'FCN32s':DD_32s, 'FCN4s':DD_4s}
   
