@@ -5,7 +5,7 @@ from keras.layers import Conv2D, MaxPool2D, Input, Activation
 from keras.applications import VGG16
 from util.BilinearUpSampling import BilinearUpSampling2D 
 
-def DD_32s(weights, input_shape=(64,64,3)):
+def DD_32s(weights, input_shape=(64,64,3), n_classes=2):
 
   #Input shape
   if input_shape is not None:
