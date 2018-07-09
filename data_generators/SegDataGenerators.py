@@ -11,11 +11,9 @@ def Preprocess_Images(path, width, height):
   try:
     
     im = cv.imread(path)
-#     im = cv.resize(im, (width,height))
-#     show_img(im)
-    
+   
     im = np.float32(im)
-    im = np.float32(cv.resize(im, (width, height)))
+    im = np.float32(cv.resize(im, (width, height), interpolation=cv.INTER_NEAREST))
     
     im -= 127.5
     im /= 127.5
@@ -34,31 +32,16 @@ def Preprocess_Segmentation(path, width, height, n_classes):
     
     seg = cv.imread(path, 0)
     
-    seg = cv.resize(seg, (width,height))
-    
-#     seg = cv.threshold(seg, 1, 255, cv.THRESH_BINARY)[1]
-    
-# #     print(seg.shape)
-    
-# #     seg = seg.flatten()
-    
-#     seg[seg == 255] = 1
-#     seg[seg == 0] = 0
-    
-  
-#     print(seg)
-    
+    seg = cv.resize(seg, (width,height), interpolation=cv.INTER_NEAREST)
+    seg[seg > n_classes] = 0
     seg = keras.utils.to_categorical(seg, n_classes)
     
     return seg
   
   except  Exception as e:
     print("Preprocess Seg", path, e)  
-    seg_labels = np.zeros(( height , width , n_classes ))
-    seg_labels = np.reshape(seg_labels, ( width*height , n_classes ))
-    return seg_labels
-    
-    
+
+
 def Segmentation_Generator(images_path, 
                            seg_path, 
                            batch_size, 
