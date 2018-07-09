@@ -57,7 +57,7 @@ def train_model(model_type,
     
 
     m.compile(optimizer= keras.optimizers.adam(lr=lr),
-             loss=pixelwise_crossentropy,
+             loss=weighted_pixelwise_crossentropy(class_weights_idx),
              metrics=['acc', mean_IU])
     
     m.load_weights(weights_path, by_name=True, reshape=True)
