@@ -44,11 +44,7 @@ def DD_32s(weights, input_shape=(64,64,3), n_classes=2):
   #FC layers as convolutional layers
   x = Conv2D(1000, (2,2), activation='relu', padding='same', name='dense_1', kernel_regularizer=l2(0.001))(x)
   x = Conv2D(500, (1,1), activation='relu', padding='same', name='dense_2', kernel_regularizer=l2(0.001))(x)
-<<<<<<< HEAD
   x = Conv2D(n_classes, (1,1), activation='linear', padding='valid', kernel_initializer='he_normal')(x)
-=======
-  x = Conv2D(n_classes, (1,1), activation='linear', padding='valid', name='dense', kernel_initializer='he_normal')(x)
->>>>>>> 3f6b1688de7707b7b52d20c5934b301577c2e90c
   
   o = BilinearUpSampling2D(size=(32,32))(x)
   
