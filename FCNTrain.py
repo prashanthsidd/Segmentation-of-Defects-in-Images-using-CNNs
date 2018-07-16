@@ -36,14 +36,16 @@ def train_model(model_type,
                 num_of_epochs=10,
                 batch_size=1,
                 n_classes=2,
-                class_weights_idx='2',
                 optimizer='adadelta', 
-                resume_training=False,):
+                resume_training=False,
+                shuffle_data=False):
   
   dd_FCNs = { 'FCN2s':DD_2s, 'FCN16s':DD_16s, 'FCN8s':DD_8s, 'FCN32s':DD_32s, 'FCN4s':DD_4s}
   
   tot_train_smpls =  math.ceil(len(os.listdir(train_images_path)) / batch_size)
   tot_val_smpls = math.ceil(len(os.listdir(val_images_path)) / batch_size)
+
+  cls_weights = get_salumn1_class_weights(n_classes)
   
   assert model_type in dd_FCNs.keys(), \
     "Model name must be one of the following %r" % dd_FCNs.keys()
@@ -57,7 +59,7 @@ def train_model(model_type,
     
 
     m.compile(optimizer= keras.optimizers.adam(lr=lr),
-             loss=weighted_pixelwise_crossentropy(class_weights_idx),
+             loss=weighted_pixelwise_crossentropy(cls_weights),
              metrics=['acc', mean_IU])
     
     m.load_weights(weights_path, by_name=True, reshape=True)
@@ -70,7 +72,7 @@ def train_model(model_type,
     
   else:
     
-    custom_objects = {"pixelwise_crossentropy": weighted_pixelwise_crossentropy(class_weights_idx),
+    custom_objects = {"pixelwise_crossentropy": weighted_pixelwise_crossentropy(cls_weights),
      "BilinearUpSampling2D": BilinearUpSampling2D, 'mean_IU': mean_IU}
 
     m = load_model(weights_path, custom_objects=custom_objects)
@@ -85,7 +87,8 @@ def train_model(model_type,
                                            input_width, 
                                            input_height, 
                                            input_height, 
-                                           input_width)
+                                           input_width,
+                                           shuffle=shuffle_data)
   
 #   print(next(train_generator)[0].shape)
   
