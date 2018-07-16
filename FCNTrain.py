@@ -2,6 +2,10 @@ import os
 import math
 
 import keras
+from keras.callbacks import (
+    ModelCheckpoint,
+    CSVLogger,
+    TensorBoard)
 from keras.models import load_model
 
 from models.DD_FCN2 import DD_2s
@@ -62,7 +66,7 @@ def train_model(model_type,
              loss=weighted_pixelwise_crossentropy(cls_weights),
              metrics=['acc', mean_IU])
     
-    m.load_weights(weights_path, by_name=True, reshape=True)
+    m.load_weights(weights_path, by_name=True)
       
     if freeze_deconv_ly is True:
       for layer in m.layers:
