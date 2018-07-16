@@ -33,7 +33,7 @@ def Preprocess_Segmentation(path, width, height, n_classes):
     seg = cv.imread(path, 0)
     
     seg = cv.resize(seg, (width,height), interpolation=cv.INTER_NEAREST)
-    seg[seg > n_classes] = 0
+    seg[seg >= n_classes] = 0
     seg = keras.utils.to_categorical(seg, n_classes)
     
     return seg
@@ -49,7 +49,8 @@ def Segmentation_Generator(images_path,
                            input_width, 
                            input_height, 
                            output_height, 
-                           output_width):
+                           output_width,
+                           shuffle=False):
   
   assert os.path.isdir(images_path) and os.path.isdir(seg_path)
   
@@ -64,7 +65,10 @@ def Segmentation_Generator(images_path,
   img_seg_zip = zip(images,segmentations)
 
   zip_list = list(img_seg_zip)
-  random.shuffle(zip_list)
+  
+  if shuffle == True:
+    random.shuffle(zip_list)
+
   zipped = itertools.cycle(zip_list)
   
   count = 0
@@ -74,7 +78,7 @@ def Segmentation_Generator(images_path,
     X = []
     Y = []
 
-    if count >= math.ceil(len(images) / batch_size):
+    if count >= math.ceil(len(images) / batch_size) and shuffle == True:
       
       zip_list = list(zip(images,segmentations))
       random.shuffle(zip_list)
