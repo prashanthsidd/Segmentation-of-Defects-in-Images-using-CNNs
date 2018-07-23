@@ -80,3 +80,28 @@ def freq_weighted_IU(y_true, y_pred):
     iu_masked = tf.boolean_mask(iu,mask)
     
     return K.sum(freq_masked * iu_masked)
+
+
+def precision(y_true, y_pred):
+    """Compute precision"""
+    confusion = compute_error_matrix(y_true, y_pred)
+    per_class_precision = K.cast(tf.diag_part(confusion), 'float') / K.cast(K.sum(confusion, axis=-1), 'float')
+    mask = tf.logical_not(tf.is_nan(per_class_precision))
+    per_class_precision = tf.boolean_mask(per_class_precision, mask)
+    return K.mean(per_class_precision)
+
+def recall(y_true, y_pred):
+    """Compute recall"""
+    confusion = compute_error_matrix(y_true, y_pred)
+    per_class_recall = K.cast(tf.diag_part(confusion), 'float') / K.cast(K.sum(confusion, axis=0), 'float')
+    mask = tf.logical_not(tf.is_nan(per_class_recall))
+    per_class_recall = tf.boolean_mask(per_class_recall, mask)
+    return K.mean(per_class_recall)
+  
+
+def f1(y_true, y_pred):
+  """Compute accuracy"""
+  pres = precision(y_true, y_pred)
+  recl = recall(y_true, y_pred)
+  
+  return 2 *  ((pres * recl) / (pres + recl))
