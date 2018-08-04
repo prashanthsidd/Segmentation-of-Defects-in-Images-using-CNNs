@@ -58,3 +58,33 @@ def get_batch(splitName='train',
           #Yield the remaining samples
           if len(data[num_of_minibatches*batch_size:]) > 0:
             yield (data[num_of_minibatches*batch_size:],label[num_of_minibatches*batch_size:])
+
+
+def gen_for_GAP_data(split_name, n_channels):
+  
+  if split_name == "valid":
+    gen = get_batch(split_name, 
+                    valid_name_fmt,
+                    isShuffle=False,
+                    chunkCount=valid_chunk_count,
+                    n_channels=n_channels)
+    steps = valid_batches
+
+  elif split_name == "test":
+    gen = get_batch(split_name,
+                    test_name_fmt,
+                    isShuffle=False,
+                    chunkCount=test_chunk_count,
+                    n_channels=n_channels)    
+    steps = test_batches
+    
+  elif split_name == "train":
+    gen = get_batch(split_name,
+                    train_name_fmt,
+                    isShuffle=False,
+                    chunkCount=train_chunk_count,
+                    n_channels=n_channels)   
+    steps = train_batches
+    
+  return gen, steps
+  
