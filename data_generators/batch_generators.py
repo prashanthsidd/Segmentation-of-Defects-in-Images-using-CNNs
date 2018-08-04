@@ -3,11 +3,11 @@ import numpy as np
 import os, sys, math
 from config.constants import *
 
-def get_batch(splitName,
-    chunkPath,
-    isShuffle=True,
-    chunkCount=0):
-
+def get_batch(splitName='train',
+                    chunkPath=train_name_fmt, 
+                    isShuffle=False,
+                    chunkCount=0, 
+                    n_channels=3):
     '''
     Python data generator to supply data in batches to keras trainer.
 
@@ -24,32 +24,37 @@ def get_batch(splitName,
 
     indexes = np.arange(chunkCount, dtype=np.uint8)
 
-    #Serve the data in infinite loop. This generator is supposed to be 
-    #used from fit, predict and evaluate generators in keras
-
     while(1):
-        if isShuffle is True:
-            np.random.shuffle(indexes)
+      
+      if isShuffle is True:
+          np.random.shuffle(indexes)
 
-        for i in indexes:
-            chunk_data_path = os.path.join(data_path, 
-            chunkPath.format(splitName, i, 'x'))
-            chunk_label_path = os.path.join(data_path, 
-            chunkPath.format(splitName, i, 'y'))
-        
-            data = np.load(chunk_data_path)
-            label = np.load(chunk_label_path)
+      for i in indexes:
+          chunk_data_path = os.path.join(data_path,
+                                         chunkPath.format(splitName, i, 'x'))
+          chunk_label_path = os.path.join(data_path,
+                                          chunkPath.format(splitName, i, 'y'))
+          with open('./VGGProcessing.log','w') as fh:
+            fh.write('Processing : {}'.format(chunk_data_path))
+          
+          data = np.load(chunk_data_path)
+          data_1 = np.copy(data)
+          label = np.load(chunk_label_path)
 
-            label = keras.utils.to_categorical(label, 
-                                            num_classes)
+          label = keras.utils.to_categorical(label, num_classes)
+          
+          #Relicate to three channels
+          if n_channels == 3:
+            data = np.repeat(data, n_channels, axis=1)
+          
+          #Transpose the data
+          data = np.transpose(data, (0, 2 ,3, 1))
 
-            #Channels last as required by tensorflow backend
-            data = np.transpose(data,[0,2,3,1])
+          num_of_minibatches = math.ceil(data.shape[0] / batch_size) - 1
 
-            num_of_minibatches = math.ceil(data.shape[0] / batch_size)
-            for k in range(num_of_minibatches):
-                yield data[k*batch_size: (k+1) * batch_size], label[k*batch_size: (k+1) * batch_size]
+          for k in range(num_of_minibatches):
+            yield (data[k*batch_size:(k+1) * batch_size],label[k*batch_size: (k+1) * batch_size])
 
-            #Yield the remaining minibatches
-            if(len(data[num_of_minibatches*batch_size:]) > 0):
-                yield data[num_of_minibatches*batch_size:], label[num_of_minibatches*batch_size]
+          #Yield the remaining samples
+          if len(data[num_of_minibatches*batch_size:]) > 0:
+            yield (data[num_of_minibatches*batch_size:],label[num_of_minibatches*batch_size:])
